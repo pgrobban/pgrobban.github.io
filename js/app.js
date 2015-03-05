@@ -22,8 +22,10 @@ app.wordClassDictionaryFormTips["Adjective"] = "The dictionary form of an adject
 app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a personal pronoun is the subject form.";
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
 
+app.editingMode = false;
 
 app.openNewEntryDialog = function () {
+    app.editingMode = false;
     app.dialog.dialog("option", "buttons", [
         {
             text: "Done",
@@ -100,10 +102,11 @@ app.prettifyOptionalWordForms = function (inputOptionalForms)
             result += s + ", ";
     }
     return result.slice(0, result.length - 2);
-}
+};
 
 app.openEditEntryDialog = function ()
 {
+    app.editingMode = true;
     // see if we have 0 or mmore than 1 selected entry
     var selectedEntries = app.table.rows(".selected").data();
     if (selectedEntries.length !== 1)
@@ -138,7 +141,7 @@ app.openEditEntryDialog = function ()
     app.wordClass.val(wordClassInput);
     app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClassInput]);
     app.setOptionalFormsToInputs(selectedEntry[3]);
-}
+};
 
 app.setOptionalFormsToInputs = function (optionalForms)
 {
@@ -149,7 +152,7 @@ app.setOptionalFormsToInputs = function (optionalForms)
     $.each(optionalForms, function (index, value) {
         $("#optionalForms input").eq(index).val(value);
     });
-}
+};
 
 app.validateEntry = function ()
 {
@@ -163,7 +166,7 @@ app.validateEntry = function ()
         app.dialog.animate({scrollTop: 0}, "medium");
 
     return valid;
-}
+};
 
 
 app.checkNotChosenWordClass = function ()
@@ -204,16 +207,16 @@ app.deleteEntries = function ()
         alert("No rows selected.");
     else if (confirm("Do you really want to delete the selected row(s)?"))
         app.table.row('.selected').remove().draw(false);
-}
+};
 
 app.getOptionalWordForms = function ()
 {
     var optionalWordForms = [];
     $.each($("#optionalForms input"), function () {
         optionalWordForms.push(this.value.trim());
-    })
+    });
     return optionalWordForms;
-}
+};
 
 app.setupOptionalFormLabelsAndInputs = function (optionalForms)
 {
@@ -234,7 +237,7 @@ app.setupOptionalFormLabelsAndInputs = function (optionalForms)
             class: "text ui-widget-content ui-corner-all"
         }));
     }
-}
+};
 
 app.addEntry = function ()
 {
@@ -245,7 +248,7 @@ app.addEntry = function ()
         app.table.row.add(data).draw();
         app.dialog.dialog("close");
     }
-}
+};
 
 app.tryParseFile = function ()
 {
@@ -275,7 +278,7 @@ app.tryParseFile = function ()
     } else {
         alert("File not supported");
     }
-}
+};
 
 
 $(document).ready(function () {
@@ -299,7 +302,7 @@ $(document).ready(function () {
                     "bHeader": false,
                     "bFooter": false,
                     "sButtonText": "Save as CSV (importable)",
-                    "sFieldSeparator": ".",
+                    "sFieldSeparator": "."
                 },
                 {
                     "sExtends": "pdf",
@@ -314,7 +317,7 @@ $(document).ready(function () {
                     "mColumns": [0, 1, 2, 4],
                     "bFooter": false,
                     "sFileName": "My word list.xls",
-                    "sFieldSeparator": ".",
+                    "sFieldSeparator": "."
                 },
                 "print"
             ]
@@ -348,7 +351,10 @@ $(document).ready(function () {
 
     app.form = app.dialog.find("form").on("submit", function (event) {
         event.preventDefault();
-        //app.addEntry();
+        if (app.editingMode)
+            app.editEntry();
+        else
+            app.addEntry();
     });
 
 });
