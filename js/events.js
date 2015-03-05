@@ -3,22 +3,23 @@ $(document).ready(function () {
 
     $("#wordClass").change(function () {
         var currentWordClass = $("#wordClass").val();
-        $("#dictionaryFormTips").html(wordClassDictionaryFormTips[currentWordClass]);
-        setupOptionalFormLabelsAndInputs(wordClassOptionalForms[currentWordClass]);
+        $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[currentWordClass]);
+        app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[currentWordClass]);
     });
 
     $('#glosTable tbody').on('click', 'tr', function () {
-        toggleSelectedRow.call(this);
+        app.toggleSelectedRow.call(this);
     });
 
     $('#glosTable tbody').on('dblclick', 'tr', function () {
         $(this).addClass('selected');
-        openEditEntryDialog();
+        app.openEditEntryDialog();
     });
 
 
-    $("#newEntryButton").on("click", openNewEntryDialog);
-
+    $("#newEntryButton").on("click", app.openNewEntryDialog);
+    $("#editEntryButton").on("click", app.openEditEntryDialog);
+    $("#deleteEntriesButton").on("click", app.deleteEntries);
 
     $("#importButton").on("click", function () {
         if (!confirm("This will overwrite the current entry table. Continue?"))
@@ -26,17 +27,18 @@ $(document).ready(function () {
         $("#fileInput").click();
     });
 
-    $("#deleteEntriesButton").on("click", deleteEntries);
 
-    $("#fileInput").change(tryParseFile);
+    $("#fileInput").change(app.tryParseFile);
 
     $("#filterBox").keyup(function () {
-        table.search($(this).val()).draw();
+        app.table.search($(this).val()).draw();
     });
 
     $('html').keyup(function (e) {
         if (e.keyCode === 46)
             deleteEntries();
-    })
+    });
+
+    
 
 });
