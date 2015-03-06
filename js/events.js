@@ -23,8 +23,9 @@ $(document).ready(function () {
     $("#exportButton").on('click', app.exportEntriesAsJSON);
 
     $("#importButton").on("click", function () {
-        if (!confirm("This will overwrite the current entry table. Continue?"))
-            return;
+        if (app.entries.length > 0)
+            if (!confirm("This will overwrite the current entry table. Continue?"))
+                return;
         $("#fileInput").click();
     });
 
@@ -40,6 +41,6 @@ $(document).ready(function () {
             deleteEntries();
     });
 
-    
+
 
 });
