@@ -132,7 +132,7 @@ app.editEntry = function ()
 
 app.exportEntriesAsJSON = function ()
 {
-    var file = new File([JSON.stringify(app.entries)], {type: "data:text/json;charset=utf8"});
+    var file = new File([JSON.stringify(app.entries, null, '\t')], {type: "data:text/json;charset=utf8"});
     saveAs(file, "My word list.json");
 };
 
