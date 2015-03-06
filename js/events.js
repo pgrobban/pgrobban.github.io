@@ -20,6 +20,7 @@ $(document).ready(function () {
     $("#newEntryButton").on("click", app.openNewEntryDialog);
     $("#editEntryButton").on("click", app.openEditEntryDialog);
     $("#deleteEntriesButton").on("click", app.deleteEntries);
+    $("#exportButton").on('click', app.exportEntriesAsJSON);
 
     $("#importButton").on("click", function () {
         if (!confirm("This will overwrite the current entry table. Continue?"))
@@ -28,7 +29,7 @@ $(document).ready(function () {
     });
 
 
-    $("#fileInput").change(app.tryParseFile);
+    $("#fileInput").change(app.tryParseJSONFile);
 
     $("#filterBox").keyup(function () {
         app.table.search($(this).val()).draw();

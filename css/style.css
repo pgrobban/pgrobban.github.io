@@ -26,7 +26,6 @@ table
 
 label, input { display:block; }
 
-
 input.text, #wordClass { margin-bottom:1em; width:95%; padding: .4em; }
 fieldset { padding:0; border:0; margin-top:1em; }
 
@@ -36,7 +35,13 @@ fieldset { padding:0; border:0; margin-top:1em; }
 #menu
 {
     width: 100%;
-    display: block;
+}
+
+.menuGroup
+{
+    margin-right: 3em;
+        display: inline;
+
 }
 
 #filterBox

@@ -1,6 +1,9 @@
 var app = {};
 
-app.wordClasses = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "Other pronoun",
+app.editingMode = false;
+app.entries = [];
+
+app.wordClassInputes = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "Other pronoun",
     "Conjunction", "Interjection", "Preposition", "Numeral", "Phrase/Expression/Proverb", "Other"];
 
 app.wordClassOptionalForms = {};
@@ -22,7 +25,6 @@ app.wordClassDictionaryFormTips["Adjective"] = "The dictionary form of an adject
 app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a personal pronoun is the subject form.";
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
 
-app.editingMode = false;
 
 app.openNewEntryDialog = function () {
     app.editingMode = false;
@@ -63,17 +65,28 @@ app.toggleSelectedRow = function () {
 
 app.getInputData = function ()
 {
-    var inputSwedishDictionaryForm = app.swedishDictionaryForm.val().trim();
-    var inputDefinition = app.definition.val().trim();
-    var inputWordClass = app.wordClass.val();
-    var optionalForms = app.getOptionalWordForms();
-    var prettifiedOptionalForms = app.prettifyOptionalWordForms(optionalForms);
-    console.log("Word: swedishDictionaryForm: " + inputSwedishDictionaryForm +
-            " definition:" + inputDefinition +
-            " wordClass: " + inputWordClass +
-            " optionalForms: " + optionalForms +
-            " prettifiedOptionalForms: " + prettifiedOptionalForms);
-    return [inputSwedishDictionaryForm, inputDefinition, inputWordClass, optionalForms, prettifiedOptionalForms];
+    var newEntry = {};
+    newEntry.swedishDictionaryForm = app.swedishDictionaryFormInput.val().trim();
+    newEntry.definition = app.definitionInput.val().trim();
+    newEntry.wordClass = app.wordClassInput.val();
+    newEntry.optionalForms = app.getOptionalWordForms();
+    console.log("Got entry: ");
+    console.log(newEntry);
+    return newEntry;
+};
+
+
+app.addEntry = function ()
+{
+    var valid = app.validateEntry();
+    if (valid)
+    {
+        var entry = app.getInputData();
+        app.entries.push(entry);
+        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
+        app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+        app.dialog.dialog("close");
+    }
 };
 
 
@@ -82,13 +95,20 @@ app.editEntry = function ()
     var valid = app.validateEntry();
     if (valid)
     {
-        var data = app.getInputData();
-        // hacky
-        console.log(app.table.row(".selected"));
+        var entry = app.getInputData();
+        var selectedIndex = app.table.row(".selected").index();
+        app.entries[selectedIndex] = entry;
+        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
         app.table.row('.selected').remove().draw(false);
-        app.table.row.add(data).draw();
+        app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
         app.dialog.dialog("close");
     }
+};
+
+app.exportEntriesAsJSON = function ()
+{
+    var file = new File([JSON.stringify(app.entries)], {type: "data:text/json;charset=utf8"});
+    saveAs(file, "My word list.json");
 };
 
 app.prettifyOptionalWordForms = function (inputOptionalForms)
@@ -97,7 +117,7 @@ app.prettifyOptionalWordForms = function (inputOptionalForms)
     var result = "";
     for (var i in inputOptionalForms)
     {
-        var s = inputOptionalForms[i].trim();
+        var s = inputOptionalForms[i].value.trim();
         if (s !== "")
             result += s + ", ";
     }
@@ -114,11 +134,9 @@ app.openEditEntryDialog = function ()
         alert("Please select one row to edit.");
         return;
     }
-    console.log("xxx");
-    console.log(selectedEntries);
 
     // now we have guaranteed only one row
-    var selectedEntry = selectedEntries[0];
+    var selectedEntry = app.entries[app.table.row(".selected").index()];
 
     console.log("selected:");
     console.log(selectedEntry);
@@ -135,22 +153,19 @@ app.openEditEntryDialog = function ()
     app.dialog.dialog("open");
     app.dialog.dialog("option", "title", "Edit entry");
 
-    app.swedishDictionaryForm.val(selectedEntry[0]);
-    app.definition.val(selectedEntry[1]);
-    var wordClassInput = selectedEntry[2];
-    app.wordClass.val(wordClassInput);
-    app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClassInput]);
-    app.setOptionalFormsToInputs(selectedEntry[3]);
+    app.swedishDictionaryFormInput.val(selectedEntry.swedishDictionaryForm);
+    app.definitionInput.val(selectedEntry.definition);
+    var wordClass = selectedEntry.wordClass;
+    app.wordClassInput.val(wordClass);
+    app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClass]);
+    app.setOptionalFormsToInputs(selectedEntry.optionalForms);
 };
 
 app.setOptionalFormsToInputs = function (optionalForms)
 {
-    if (typeof (optionalForms) === "string")
-    {
-        optionalForms = optionalForms.split(",");
-    }
-    $.each(optionalForms, function (index, value) {
-        $("#optionalForms input").eq(index).val(value);
+    console.log(optionalForms);
+    $.each(optionalForms, function (index, v) {
+        $("#optionalForms input").eq(index).val(v.value);
     });
 };
 
@@ -160,8 +175,8 @@ app.validateEntry = function ()
     app.allFields.removeClass("ui-state-error");
 
     valid = valid && app.checkNotChosenWordClass();
-    valid = valid && app.checkNotEmpty(app.swedishDictionaryForm, "Swedish dictionary form");
-    valid = valid && app.checkNotEmpty(app.definition, "Definition");
+    valid = valid && app.checkNotEmpty(app.swedishDictionaryFormInput, "Swedish dictionary form");
+    valid = valid && app.checkNotEmpty(app.definitionInput, "Definition");
     if (!valid)
         app.dialog.animate({scrollTop: 0}, "medium");
 
@@ -171,8 +186,8 @@ app.validateEntry = function ()
 
 app.checkNotChosenWordClass = function ()
 {
-    if (app.wordClass.val() === null) {
-        app.wordClass.addClass("ui-state-error");
+    if (app.wordClassInput.val() === null) {
+        app.wordClassInput.addClass("ui-state-error");
         app.updateTips("Please select a word class.");
         return false;
     } else {
@@ -206,16 +221,35 @@ app.deleteEntries = function ()
     if (selectedRowCount === 0)
         alert("No rows selected.");
     else if (confirm("Do you really want to delete the selected row(s)?"))
+    {
+        console.log("Deleting selected indexes");
+        var selectedIndices = app.table.rows(".selected").indexes();
+        console.log(selectedIndices);
+        for (var i = 0; i < selectedIndices.length; i++)
+        {
+            app.entries.splice(selectedIndices[i]);
+        }
         app.table.row('.selected').remove().draw(false);
+        console.log("Remaining entries");
+        console.log(app.entries);
+    }
 };
 
 app.getOptionalWordForms = function ()
 {
-    var optionalWordForms = [];
-    $.each($("#optionalForms input"), function () {
-        optionalWordForms.push(this.value.trim());
-    });
-    return optionalWordForms;
+    var inputOptionalFormsArrayOfObjects = [];
+
+    var currentWordClassOptionalForms = app.wordClassOptionalForms[app.wordClassInput.val()];
+
+    for (var form in currentWordClassOptionalForms)
+    {
+        var optionalForm = {};
+        optionalForm.name = currentWordClassOptionalForms[form];
+        optionalForm.value = $("#optionalForms input").eq(form).val();
+        inputOptionalFormsArrayOfObjects.push(optionalForm);
+    }
+
+    return inputOptionalFormsArrayOfObjects;
 };
 
 app.setupOptionalFormLabelsAndInputs = function (optionalForms)
@@ -239,23 +273,13 @@ app.setupOptionalFormLabelsAndInputs = function (optionalForms)
     }
 };
 
-app.addEntry = function ()
-{
-    var valid = app.validateEntry();
-    if (valid)
-    {
-        var data = app.getInputData();
-        app.table.row.add(data).draw();
-        app.dialog.dialog("close");
-    }
-};
 
-app.tryParseFile = function ()
+app.tryParseJSONFile = function ()
 {
 
     // try to read file
     var file = document.getElementById('fileInput').files[0];
-    var textType = /text.*/;
+    var textType = /application\/json.*/;
 
     if (file.type.match(textType)) {
         var reader = new FileReader();
@@ -264,12 +288,16 @@ app.tryParseFile = function ()
             var contents = reader.result;
             // try to make table
             app.table.clear().draw();
-            var array = CSVToArray(contents, ",");
+
+            app.entries = JSON.parse(contents);
+
             console.log("Parsed array from file:");
-            console.log(array);
-            for (var row in array)
+            console.log(contents);
+            for (var e in app.entries)
             {
-                app.table.row.add(array[row]);
+                var entry = app.entries[e];
+                var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalFOrms);
+                app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
             }
             app.table.draw();
         };
@@ -293,28 +321,17 @@ $(document).ready(function () {
             "aButtons": [
                 {
                     "sExtends": "copy",
-                    "mColumns": [0, 1, 2, 4],
                     "bFooter": false
-                },
-                {
-                    "sExtends": "csv",
-                    "sTitle": "My word list",
-                    "bHeader": false,
-                    "bFooter": false,
-                    "sButtonText": "Save as CSV (importable)",
-                    "sFieldSeparator": "."
                 },
                 {
                     "sExtends": "pdf",
                     "sButtonText": "Generate PDF",
                     "sTitle": "My word list",
-                    "mColumns": [0, 1, 2, 4],
                     "bFooter": false
                 },
                 {
                     "sExtends": "xls",
                     "sTitle": "My word list",
-                    "mColumns": [0, 1, 2, 4],
                     "bFooter": false,
                     "sFileName": "My word list.xls",
                     "sFieldSeparator": "."
@@ -323,19 +340,17 @@ $(document).ready(function () {
             ]
         }
     });
-    app.table.column(3).visible(false); // hide debug optional forms
-    $('searchBox').addClass("ui-corner-all");
 
-    app.swedishDictionaryForm = $("#swedishDictionaryForm");
-    app.definition = $("#definition");
-    app.wordClass = $("#wordClass");
-    app.allFields = $([]).add(app.swedishDictionaryForm).add(definition).add(wordClass),
+    app.swedishDictionaryFormInput = $("#swedishDictionaryForm");
+    app.definitionInput = $("#definition");
+    app.wordClassInput = $("#wordClass");
+    app.allFields = $([]).add(app.swedishDictionaryFormInput).add(definition).add(wordClass),
             app.tips = $(".validateTips");
 
     // set up word classes
-    for (var wc in app.wordClasses)
+    for (var wc in app.wordClassInputes)
     {
-        app.wordClass.append($("<option/>").val(app.wordClasses[wc]).text(app.wordClasses[wc]));
+        app.wordClassInput.append($("<option/>").val(app.wordClassInputes[wc]).text(app.wordClassInputes[wc]));
     }
 
     app.dialog = $("#dialogForm").dialog({
