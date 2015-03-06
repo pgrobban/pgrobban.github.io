@@ -82,12 +82,35 @@ app.addEntry = function ()
     if (valid)
     {
         var entry = app.getInputData();
+        if (app.checkForPrependingParticles(entry) === false)
+            return;
+
         app.entries.push(entry);
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
         app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
         app.dialog.dialog("close");
+
     }
 };
+
+// check for en/ett in front of nouns, att in front of verbs. returns true if the add/edit should proceed
+app.checkForPrependingParticles = function (entry)
+{
+    if (entry.wordClass === "Noun")
+    {
+        if (!(entry.swedishDictionaryForm.startsWith("en ") ||
+                entry.swedishDictionaryForm.startsWith("ett ")))
+            if (!confirm("It is recommended that you add en/ett in front of nouns. Continue without doing this?"))
+                return false;
+    }
+    if (entry.wordClass === "Verb")
+    {
+        if (!(entry.swedishDictionaryForm.startsWith("att ")))
+            if (!confirm("It is recommended that you add att in front of verbs. Continue without doing this?"))
+                return false;
+    }
+    return true;
+}
 
 
 app.editEntry = function ()
@@ -96,6 +119,8 @@ app.editEntry = function ()
     if (valid)
     {
         var entry = app.getInputData();
+        if (app.checkForPrependingParticles(entry) === false)
+            return;
         var selectedIndex = app.table.row(".selected").index();
         app.entries[selectedIndex] = entry;
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
@@ -378,4 +403,9 @@ jQuery.fn.dataTableExt.oSort['string-case-asc'] = function (x, y) {
     return x.localeCompare(y, 'sv');
 };
 
-
+if (typeof String.prototype.startsWith !== 'function') {
+    // see below for better implementation!
+    String.prototype.startsWith = function (str) {
+        return this.indexOf(str) === 0;
+    };
+}
