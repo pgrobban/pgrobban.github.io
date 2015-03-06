@@ -296,7 +296,7 @@ app.tryParseJSONFile = function ()
             for (var e in app.entries)
             {
                 var entry = app.entries[e];
-                var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalFOrms);
+                var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
                 app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
             }
             app.table.draw();
