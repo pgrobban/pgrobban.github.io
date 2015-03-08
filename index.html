@@ -53,17 +53,19 @@
             <thead>
                 <tr>
                     <th>Swedish dictionary form</th>
+                    <th>Pronunciation</th>
                     <th>Definition</th>
                     <th>Word class</th>
-                    <th>Optional forms</th>
+                    <th>Additional forms</th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <th>Swedish dictionary form</th>
+                    <th>Pronunciation</th>
                     <th>Definition</th>
                     <th>Word class</th>
-                    <th>Optional forms</th>
+                    <th>Additional forms</th>
                 </tr>
             </tfoot>
             <tbody>
@@ -90,8 +92,15 @@
                     <label for="definition">Definition</label>
                     <input type="text" name="definition" id="definition" value="" class="text ui-widget-content ui-corner-all">
                 </fieldset>
+                
+                <p>The following fields are optional. You may return here and fill them in when you get to know them.</p>
+                
+                <fieldset>
+                    <label for="pronunciation">Pronunciation</label>
+                    <input type="text" name="pronunciation" id="pronunciation" value="" class="text ui-widget-content ui-corner-all">
+                </fieldset>
 
-                <fieldset id="optionalForms">
+                <fieldset id="additionalForms">
                     <!-- generated dynamically -->
                 </fieldset>
 

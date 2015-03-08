@@ -34,7 +34,7 @@ app.openNewEntryDialog = function () {
             click: app.addEntry
         }
     ]);
-    $("#optionalForms").empty();
+    $("#additionalForms").empty();
     app.dialog.dialog("open");
     app.dialog.dialog("option", "title", "Add new entry");
 };
@@ -67,9 +67,10 @@ app.getInputData = function ()
 {
     var newEntry = {};
     newEntry.swedishDictionaryForm = app.swedishDictionaryFormInput.val().trim();
+    newEntry.pronunciation = app.pronunciationInput.val().trim();
     newEntry.definition = app.definitionInput.val().trim();
     newEntry.wordClass = app.wordClassInput.val();
-    newEntry.optionalForms = app.getOptionalWordForms();
+    newEntry.additionalForms = app.getOptionalWordForms();
     console.log("Got entry: ");
     console.log(newEntry);
     return newEntry;
@@ -86,8 +87,8 @@ app.addEntry = function ()
             return;
 
         app.entries.push(entry);
-        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
-        app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
+        app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
         app.dialog.dialog("close");
 
     }
@@ -100,13 +101,13 @@ app.checkForPrependingParticles = function (entry)
     {
         if (!(entry.swedishDictionaryForm.startsWith("en ") ||
                 entry.swedishDictionaryForm.startsWith("ett ")))
-            if (!confirm("It is recommended that you add en/ett in front of nouns. Continue without doing this?"))
+            if (!confirm("It is recommended that you add 'en/ett' in front of nouns. Continue without doing this?"))
                 return false;
     }
     if (entry.wordClass === "Verb")
     {
         if (!(entry.swedishDictionaryForm.startsWith("att ")))
-            if (!confirm("It is recommended that you add att in front of verbs. Continue without doing this?"))
+            if (!confirm("It is recommended that you add 'att' in front of verbs. Continue without doing this?"))
                 return false;
     }
     return true;
@@ -123,9 +124,9 @@ app.editEntry = function ()
             return;
         var selectedIndex = app.table.row(".selected").index();
         app.entries[selectedIndex] = entry;
-        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
+        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         app.table.row('.selected').remove().draw(false);
-        app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+        app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
         app.dialog.dialog("close");
     }
 };
@@ -180,17 +181,18 @@ app.openEditEntryDialog = function ()
 
     app.swedishDictionaryFormInput.val(selectedEntry.swedishDictionaryForm);
     app.definitionInput.val(selectedEntry.definition);
+    app.pronunciationInput.val(selectedEntry.pronunciation);
     var wordClass = selectedEntry.wordClass;
     app.wordClassInput.val(wordClass);
     app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClass]);
-    app.setOptionalFormsToInputs(selectedEntry.optionalForms);
+    app.setOptionalFormsToInputs(selectedEntry.additionalForms);
 };
 
-app.setOptionalFormsToInputs = function (optionalForms)
+app.setOptionalFormsToInputs = function (additionalForms)
 {
-    console.log(optionalForms);
-    $.each(optionalForms, function (index, v) {
-        $("#optionalForms input").eq(index).val(v.value);
+    console.log(additionalForms);
+    $.each(additionalForms, function (index, v) {
+        $("#additionalForms input").eq(index).val(v.value);
     });
 };
 
@@ -232,10 +234,10 @@ app.checkNotEmpty = function (o, name)
 };
 
 app.updateTips = function (t) {
-    app.tips.text(t)
+    app.tipsBox.text(t)
             .addClass("ui-state-highlight");
     setTimeout(function () {
-        app.tips.removeClass("ui-state-highlight", 1500);
+        app.tipsBox.removeClass("ui-state-highlight", 1500);
     }, 500);
 };
 
@@ -268,28 +270,29 @@ app.getOptionalWordForms = function ()
 
     for (var form in currentWordClassOptionalForms)
     {
-        var optionalForm = {};
-        optionalForm.name = currentWordClassOptionalForms[form];
-        optionalForm.value = $("#optionalForms input").eq(form).val();
-        inputOptionalFormsArrayOfObjects.push(optionalForm);
+        var additionalForm = {};
+        additionalForm.name = currentWordClassOptionalForms[form];
+        additionalForm.value = $("#additionalForms input").eq(form).val();
+        inputOptionalFormsArrayOfObjects.push(additionalForm);
     }
 
     return inputOptionalFormsArrayOfObjects;
 };
 
-app.setupOptionalFormLabelsAndInputs = function (optionalForms)
+app.setupOptionalFormLabelsAndInputs = function (additionalForms)
 {
-    $("#optionalForms").empty();
+    var additionalFormsDiv = $("#additionalForms");
+    additionalFormsDiv.empty();
 
-    if (optionalForms.length > 0)
-        $("#optionalForms").append($("<p>The following forms are optional. You may return here and fill them in when you get to know them.</p>"));
+    if (additionalForms.length > 0)
+        additionalFormsDiv.append("<h3>Additional forms</h3>");
 
-    for (var wco in optionalForms)
+    for (var wco in additionalForms)
     {
-        var formName = optionalForms[wco];
+        var formName = additionalForms[wco];
 
-        $("#optionalForms").append($("<label>").attr("for", formName).html(formName));
-        $("#optionalForms").append($("<input>").attr({
+        additionalFormsDiv.append($("<label>").attr("for", formName).html(formName));
+        additionalFormsDiv.append($("<input>").attr({
             type: "text",
             name: formName,
             id: formName,
@@ -321,8 +324,8 @@ app.tryParseJSONFile = function ()
             for (var e in app.entries)
             {
                 var entry = app.entries[e];
-                var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.optionalForms);
-                app.table.row.add([entry.swedishDictionaryForm, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+                var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
+                app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
             }
             app.table.draw();
         };
@@ -369,8 +372,9 @@ $(document).ready(function () {
     app.swedishDictionaryFormInput = $("#swedishDictionaryForm");
     app.definitionInput = $("#definition");
     app.wordClassInput = $("#wordClass");
-    app.allFields = $([]).add(app.swedishDictionaryFormInput).add(definition).add(wordClass),
-            app.tips = $(".validateTips");
+    app.pronunciationInput = $("#pronunciation");
+    app.allFields = $([]).add(app.swedishDictionaryFormInput).add(app.definitionInput).add(app.wordClassInput);
+    app.tipsBox = $(".validateTips");
 
     // set up word classes
     for (var wc in app.wordClassInputes)
