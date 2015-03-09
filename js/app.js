@@ -30,10 +30,10 @@ app.wordClassOptionalFormTips["Perfect tense"] = "(supine)";
 app.wordClassOptionalFormTips["Positive neuter"] = "<i>ett</i> ~ &lt;noun&gt;";
 app.wordClassOptionalFormTips["Positive definite"] = "<i>den/det/de</i> ~ &lt;noun&gt";
 app.wordClassOptionalFormTips["Positive definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
-app.wordClassOptionalFormTips["Comparative"] =  "<i>en/ett/den/det/de</i> ~ + &lt;noun&gt;";
+app.wordClassOptionalFormTips["Comparative"] = "<i>en/ett/den/det/de</i> ~ + &lt;noun&gt;";
 app.wordClassOptionalFormTips["Superlative"] = " <i>är ~</i>";
-app.wordClassOptionalFormTips["Definite superlative"] =  "<i>den/det/de</i> ~ &lt;noun&gt";
-app.wordClassOptionalFormTips["Definite superlative masculine"] =  "<i>den</i> ~ &lt;masc. noun&gt";
+app.wordClassOptionalFormTips["Definite superlative"] = "<i>den/det/de</i> ~ &lt;noun&gt";
+app.wordClassOptionalFormTips["Definite superlative masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
 app.wordClassOptionalFormTips["Possessive common"] = "(someone's &lt;en-noun&gt;)"
 app.wordClassOptionalFormTips["Possessive neuter"] = "(someone's &lt;ett-noun&gt;)"
 app.wordClassOptionalFormTips["Possessive plural"] = "(someone's &lt;pl. noun&gt;)"
@@ -105,8 +105,9 @@ app.addEntry = function ()
         app.entries.push(entry);
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
-        app.dialog.dialog("close");
 
+        $("#exportButton").attr("disabled", false);
+        app.dialog.dialog("close");
     }
 };
 
@@ -275,6 +276,10 @@ app.deleteEntries = function ()
         app.table.row('.selected').remove().draw(false);
         console.log("Remaining entries");
         console.log(app.entries);
+        $("#editEntryButton").attr("disabled", true);
+
+        if (app.entries.length === 0)
+            $("#exportButton").attr("disabled", true);
     }
 };
 
@@ -306,13 +311,13 @@ app.setupOptionalFormLabelsAndInputs = function (additionalForms)
     for (var wco in additionalForms)
     {
         var formName = additionalForms[wco];
-        
+
         var formLabel = $("<label>").attr("for", formName).text(formName);
         formLabel.append($("<span>")
                 .addClass("fieldTips")
                 .html(app.wordClassOptionalFormTips[formName]));
         additionalFormsDiv.append(formLabel);
-        
+
         additionalFormsDiv.append($("<input>").attr({
             type: "text",
             name: formName,
@@ -359,7 +364,7 @@ app.tryParseJSONFile = function ()
 
 
 $(document).ready(function () {
-    
+
     // setup table
     app.table = $('#glosTable').DataTable({
         "order": [[0, "asc"]],
