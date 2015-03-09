@@ -338,12 +338,12 @@ app.tryParseJSONFile = function ()
 
 
 $(document).ready(function () {
-
+    
     // setup table
     app.table = $('#glosTable').DataTable({
         "order": [[0, "asc"]],
         "iDisplayLength": 25,
-        dom: '<"top"i>Trt<"bottom"lp><"clear">',
+        dom: '<"top"i>CTrt<"bottom"lp><"clear">',
         "oTableTools": {
             "sSwfPath": "swf/copy_csv_xls_pdf.swf",
             "aButtons": [
