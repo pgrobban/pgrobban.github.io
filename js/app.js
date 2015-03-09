@@ -6,24 +6,40 @@ app.entries = [];
 app.wordClassInputes = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "Other pronoun",
     "Conjunction", "Interjection", "Preposition", "Numeral", "Phrase/Expression/Proverb", "Other"];
 
-app.wordClassOptionalForms = {};
-app.wordClassOptionalForms["Noun"] = ["Definite singular", "Indefinite pural", "Definite plural",
-    "Genitive indefinite singular", "Genitive definite singular", "Genitive indefinite plural", "Genitive definite plural"];
-app.wordClassOptionalForms["Verb"] = ["Present tense", "Past tense (preterite)", "Perfect tense (supine)", "Imperative mood",
-    "Passive present tense", "Passive past tense", "Passive perfect tense", "Particip", "Perfekt particip"];
-app.wordClassOptionalForms["Adjective"] = ["Positive <i>ett</i> ~ &lt;noun&gt;", "Positive <i>den/det/de</i> ~ &lt;noun&gt", "Positive <i>den</i> ~ &lt;masc. noun&gt",
-    "Comparative <i>en/ett/den/det/de</i> ~ + &lt;noun&gt;", "Superlative <i>är ~</i>", "Def. superlative <i>den/det/de</i> ~ &lt;noun&gt;", "Def. superlative <i>den</i> ~ &lt;masc. noun&gt;"];
-app.wordClassOptionalForms["Personal pronoun"] = ["Object form", "Possessive &lt;en-noun&gt;", "Possessive &lt;ett-noun&gt;", "Possessive &lt;plural noun&gt;"];
-app.wordClassOptionalForms["Phrase/Expression/Proverb"] = ["Literal meaning"];
-app.wordClassOptionalForms["Numeral"] = ["Ordinal form", "Ordinal form <i>den/det/de</i> ~ &lt;noun&gt;", "Ordinal form <i>den</i> ~ &lt;masc. noun&gt;"];
-
-//
 app.wordClassDictionaryFormTips = {};
 app.wordClassDictionaryFormTips["Noun"] = "The dictionary form of a noun is the indefinite singular form. (<i>en/ett</i> ~)";
 app.wordClassDictionaryFormTips["Verb"] = "The dictionary form of a verb is the infinitive form (<i>att</i> ~)";
 app.wordClassDictionaryFormTips["Adjective"] = "The dictionary form of an adjective is the positive <i>en</i>-form.";
 app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a personal pronoun is the subject form.";
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
+
+app.wordClassOptionalForms = {};
+app.wordClassOptionalForms["Noun"] = ["Definite singular", "Indefinite pural", "Definite plural",
+    "Genitive indefinite singular", "Genitive definite singular", "Genitive indefinite plural", "Genitive definite plural"];
+app.wordClassOptionalForms["Verb"] = ["Present tense", "Past tense", "Perfect tense", "Imperative mood",
+    "Passive present tense", "Passive past tense", "Passive perfect tense", "Particip", "Perfekt particip"];
+app.wordClassOptionalForms["Adjective"] = ["Positive neuter", "Positive definite", "Positive definite masculine",
+    "Comparative", "Superlative", "Definite superlative", "Definite superlative masculine"];
+app.wordClassOptionalForms["Personal pronoun"] = ["Object form", "Possessive common", "Possessive neuter", "Possessive plural"];
+app.wordClassOptionalForms["Phrase/Expression/Proverb"] = ["Literal meaning"];
+app.wordClassOptionalForms["Numeral"] = ["Ordinal form", "Ordinal definite", "Ordinal definite masculine"];
+
+app.wordClassOptionalFormTips = {};
+app.wordClassOptionalFormTips["Past tense"] = "(preterite)";
+app.wordClassOptionalFormTips["Perfect tense"] = "(supine)";
+app.wordClassOptionalFormTips["Positive neuter"] = "<i>ett</i> ~ &lt;noun&gt;";
+app.wordClassOptionalFormTips["Positive definite"] = "<i>den/det/de</i> ~ &lt;noun&gt";
+app.wordClassOptionalFormTips["Positive definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
+app.wordClassOptionalFormTips["Comparative"] =  "<i>en/ett/den/det/de</i> ~ + &lt;noun&gt;";
+app.wordClassOptionalFormTips["Superlative"] = " <i>är ~</i>";
+app.wordClassOptionalFormTips["Definite superlative"] =  "<i>den/det/de</i> ~ &lt;noun&gt";
+app.wordClassOptionalFormTips["Definite superlative masculine"] =  "<i>den</i> ~ &lt;masc. noun&gt";
+app.wordClassOptionalFormTips["Possessive common"] = "(someone's &lt;en-noun&gt;)"
+app.wordClassOptionalFormTips["Possessive neuter"] = "(someone's &lt;ett-noun&gt;)"
+app.wordClassOptionalFormTips["Possessive plural"] = "(someone's &lt;pl. noun&gt;)"
+app.wordClassOptionalFormTips["Ordinal definite"] = "<i>den/det/de</i> ~ &lt;noun&gt;"
+app.wordClassOptionalFormTips["Ordinal definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt;";
+
 
 
 app.openNewEntryDialog = function () {
@@ -290,8 +306,13 @@ app.setupOptionalFormLabelsAndInputs = function (additionalForms)
     for (var wco in additionalForms)
     {
         var formName = additionalForms[wco];
-
-        additionalFormsDiv.append($("<label>").attr("for", formName).html(formName));
+        
+        var formLabel = $("<label>").attr("for", formName).text(formName);
+        formLabel.append($("<span>")
+                .addClass("fieldTips")
+                .html(app.wordClassOptionalFormTips[formName]));
+        additionalFormsDiv.append(formLabel);
+        
         additionalFormsDiv.append($("<input>").attr({
             type: "text",
             name: formName,
