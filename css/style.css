@@ -34,14 +34,15 @@ fieldset { padding:0; border:0; margin-top:1em; }
 
 #menu
 {
-    width: 100%;
+    float: left;
     margin-bottom: 1em;
 }
 
 .menuGroup
 {
-    margin-right: 3em;
     display: inline;
+    float: Left;
+    margin-right: 50px;
 }
 
 #filterBox
@@ -69,6 +70,17 @@ button:disabled
 {
     background-color: #eee;
 }
+
+#deleteEntriesButton
+{
+    background-color: orange;
+}
+
+#deleteEntriesButton:hover
+{
+    background-color: tomato;
+}
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -99,6 +111,7 @@ ul.ColVis_collection li:hover {
 
 button.ColVis_Button {
     margin-left: 3em;
+    font-size: 0.8em;
 }
 
 button.ColVis_Button::-moz-focus-inner { 
