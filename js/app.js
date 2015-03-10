@@ -394,6 +394,7 @@ $(document).ready(function () {
             ]
         }
     });
+    $(".ColVis_Button").addClass("fa fa-table");
 
     app.swedishDictionaryFormInput = $("#swedishDictionaryForm");
     app.definitionInput = $("#definition");

@@ -41,6 +41,12 @@ $(document).ready(function () {
             deleteEntries();
     });
 
+    // key events
+    Mousetrap.bind('mod+n', function () {
+        app.openNewEntryDialog();
+        return false;
+    });
+
 
 
 });
