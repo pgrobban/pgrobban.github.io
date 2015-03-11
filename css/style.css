@@ -19,7 +19,7 @@ body
     font-size: 0.8em;
 }
 
-#fileInput, #nounArticles
+#fileInput, #mandatoryData, #optionalData, #nounArticles
 {
     display: none;
 }
@@ -36,7 +36,7 @@ label, input, textarea {
 }
 
 input.text, textarea, #nounArticles, #wordClass { margin-bottom:1em; width:100%; padding: .4em; }
-fieldset { padding:0; border:0; margin-top:1em; }
+fieldset { padding:0; border:0; margin-top:0.5em; }
 .ui-dialog .ui-state-error { padding: .3em; }
 .validateTips { border: 1px solid transparent; }
 

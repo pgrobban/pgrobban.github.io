@@ -87,13 +87,15 @@
                 <h3 class="formHeader">Required data</h3>
                 <p class="validateTips">Please fill in the following.</p>
 
-                <fieldset id="mandatoryForms">
+                <fieldset id="wordClassField">
                     <label for="wordClass">Word class</label>
                     <select id="wordClass">
                         <!-- generated dynamically -->
                         <option selected disabled value=''>Select a word class...</option>
                     </select>
+                </fieldset>
 
+                <fieldset id="mandatoryData">
                     <label for="swedishDictionaryForm">Swedish dictionary form<br/>
                         <span class="fieldTips" id="dictionaryFormTips"></span>
                     </label>
@@ -110,10 +112,9 @@
                     <input type="text" name="definition" id="definition" value="" class="text ui-widget-content ui-corner-all">
                 </fieldset>
 
-                <h3 class="formHeader">Optional data</h3>
-                <p>The following fields are optional. You may return here and fill them in when you get to know them.</p>
-
                 <fieldset id="optionalData">
+                    <h3 class="formHeader">Optional data</h3>
+                    <p>The following fields are optional. You may return here and fill them in when you get to know them.</p>
                     <label for="pronunciation">Pronunciation</label>
                     <input type="text" name="pronunciation" id="pronunciation" value="" class="text ui-widget-content ui-corner-all">
                     <label for="usageNotes">Usage notes, example sentences etc.</label>

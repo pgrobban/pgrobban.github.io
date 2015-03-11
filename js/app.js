@@ -50,7 +50,7 @@ $(document).ready(function () {
 
     app.dialog = $("#dialogForm").dialog({
         autoOpen: false,
-        height: 0.8 * $(window).height(),
+        height: 0.85 * $(window).height(),
         width: 500,
         modal: true,
         close: function () {
@@ -120,6 +120,7 @@ app.openNewEntryDialog = function () {
             click: app.addEntry
         }
     ]);
+    $("#mandatoryData, #optionalData").hide();
     $("#dictionaryFormTips").text("");
     $("#nounArticles").hide();
     $("#additionalForms").empty();
@@ -281,6 +282,8 @@ app.openEditEntryDialog = function ()
             }
         }
     ]);
+    $("#mandatoryData, #optionalData").show();
+
 
     if (selectedEntry.wordClass === "Noun")
     {
@@ -310,6 +313,7 @@ app.openEditEntryDialog = function ()
 
 app.wordClassChanged = function (currentWordClass)
 {
+    $("#mandatoryData, #optionalData").show("medium");
     $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[currentWordClass]);
     if (currentWordClass === "Noun")
         $("#nounArticles").show();
