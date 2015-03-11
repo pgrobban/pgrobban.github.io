@@ -83,9 +83,10 @@
         <div id="dialogForm">
 
             <form id="inputForm">
-                <fieldset id="mandatoryForms">
-                    <p class="validateTips">Please fill in the following.</p>
+                <h3 class="formHeader">Required data</h3>
+                <p class="validateTips">Please fill in the following.</p>
 
+                <fieldset id="mandatoryForms">
                     <label for="wordClass">Word class</label>
                     <select id="wordClass">
                         <!-- generated dynamically -->
@@ -100,11 +101,14 @@
                     <input type="text" name="definition" id="definition" value="" class="text ui-widget-content ui-corner-all">
                 </fieldset>
 
+                <h3 class="formHeader">Optional data</h3>
                 <p>The following fields are optional. You may return here and fill them in when you get to know them.</p>
 
-                <fieldset>
+                <fieldset id="optionalData">
                     <label for="pronunciation">Pronunciation</label>
                     <input type="text" name="pronunciation" id="pronunciation" value="" class="text ui-widget-content ui-corner-all">
+                    <label for="usageNotes">Usage notes, example sentences etc.</label>
+                    <textarea name="uesageNotes" id="usageNotes" class="text ui-widget-content ui-corner-all"></textarea>
                 </fieldset>
 
                 <fieldset id="additionalForms">

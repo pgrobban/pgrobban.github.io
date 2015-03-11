@@ -1,5 +1,74 @@
 var app = {};
 
+$(document).ready(function () {
+
+    // setup table
+    app.table = $('#glosTable').DataTable({
+        "order": [[0, "asc"]],
+        "iDisplayLength": 25,
+        dom: '<"top"i>CTrt<"bottom"lp><"clear">',
+        "oTableTools": {
+            "sSwfPath": "swf/copy_csv_xls_pdf.swf",
+            "aButtons": [
+                {
+                    "sExtends": "copy",
+                    "bFooter": false
+                },
+                {
+                    "sExtends": "pdf",
+                    "sButtonText": "Generate PDF",
+                    "sTitle": "My word list",
+                    "bFooter": false
+                },
+                {
+                    "sExtends": "xls",
+                    "sTitle": "My word list",
+                    "bFooter": false,
+                    "sFileName": "My word list.xls",
+                    "sFieldSeparator": "."
+                },
+                "print"
+            ]
+        }
+    });
+    $(".ColVis_Button").addClass("fa fa-table");
+
+    app.swedishDictionaryFormInput = $("#swedishDictionaryForm");
+    app.definitionInput = $("#definition");
+    app.wordClassInput = $("#wordClass");
+    app.pronunciationInput = $("#pronunciation");
+    app.usageNotesInput = $("#usageNotes");
+    app.allFieldsForValidation = $([]).add(app.swedishDictionaryFormInput).add(app.definitionInput).add(app.wordClassInput);
+    app.tipsBox = $(".validateTips");
+
+    // set up word classes
+    for (var wc in app.wordClassInputes)
+    {
+        app.wordClassInput.append($("<option/>").val(app.wordClassInputes[wc]).text(app.wordClassInputes[wc]));
+    }
+
+    app.dialog = $("#dialogForm").dialog({
+        autoOpen: false,
+        height: 0.8 * $(window).height(),
+        width: 500,
+        modal: true,
+        close: function () {
+            app.form[0].reset();
+            app.allFieldsForValidation.removeClass("ui-state-error");
+        }
+    });
+
+    app.form = app.dialog.find("form").on("submit", function (event) {
+        event.preventDefault();
+        if (app.editingMode)
+            app.editEntry();
+        else
+            app.addEntry();
+    });
+
+});
+
+
 app.editingMode = false;
 app.entries = [];
 
@@ -84,6 +153,7 @@ app.getInputData = function ()
     var newEntry = {};
     newEntry.swedishDictionaryForm = app.swedishDictionaryFormInput.val().trim();
     newEntry.pronunciation = app.pronunciationInput.val().trim();
+    newEntry.usageNotes = app.usageNotesInput.val().trim();
     newEntry.definition = app.definitionInput.val().trim();
     newEntry.wordClass = app.wordClassInput.val();
     newEntry.additionalForms = app.getOptionalWordForms();
@@ -199,6 +269,8 @@ app.openEditEntryDialog = function ()
     app.swedishDictionaryFormInput.val(selectedEntry.swedishDictionaryForm);
     app.definitionInput.val(selectedEntry.definition);
     app.pronunciationInput.val(selectedEntry.pronunciation);
+    app.usageNotesInput.val(selectedEntry.usageNotes);
+
     var wordClass = selectedEntry.wordClass;
     app.wordClassInput.val(wordClass);
     app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClass]);
@@ -216,7 +288,7 @@ app.setOptionalFormsToInputs = function (additionalForms)
 app.validateEntry = function ()
 {
     var valid = true;
-    app.allFields.removeClass("ui-state-error");
+    app.allFieldsForValidation.removeClass("ui-state-error");
 
     valid = valid && app.checkNotChosenWordClass();
     valid = valid && app.checkNotEmpty(app.swedishDictionaryFormInput, "Swedish dictionary form");
@@ -306,7 +378,7 @@ app.setupOptionalFormLabelsAndInputs = function (additionalForms)
     additionalFormsDiv.empty();
 
     if (additionalForms.length > 0)
-        additionalFormsDiv.append("<h3>Additional forms</h3>");
+        additionalFormsDiv.append("<h3 class='formHeader'>Additional forms/conjugations</h3>");
 
     for (var wco in additionalForms)
     {
@@ -363,72 +435,7 @@ app.tryParseJSONFile = function ()
 };
 
 
-$(document).ready(function () {
 
-    // setup table
-    app.table = $('#glosTable').DataTable({
-        "order": [[0, "asc"]],
-        "iDisplayLength": 25,
-        dom: '<"top"i>CTrt<"bottom"lp><"clear">',
-        "oTableTools": {
-            "sSwfPath": "swf/copy_csv_xls_pdf.swf",
-            "aButtons": [
-                {
-                    "sExtends": "copy",
-                    "bFooter": false
-                },
-                {
-                    "sExtends": "pdf",
-                    "sButtonText": "Generate PDF",
-                    "sTitle": "My word list",
-                    "bFooter": false
-                },
-                {
-                    "sExtends": "xls",
-                    "sTitle": "My word list",
-                    "bFooter": false,
-                    "sFileName": "My word list.xls",
-                    "sFieldSeparator": "."
-                },
-                "print"
-            ]
-        }
-    });
-    $(".ColVis_Button").addClass("fa fa-table");
-
-    app.swedishDictionaryFormInput = $("#swedishDictionaryForm");
-    app.definitionInput = $("#definition");
-    app.wordClassInput = $("#wordClass");
-    app.pronunciationInput = $("#pronunciation");
-    app.allFields = $([]).add(app.swedishDictionaryFormInput).add(app.definitionInput).add(app.wordClassInput);
-    app.tipsBox = $(".validateTips");
-
-    // set up word classes
-    for (var wc in app.wordClassInputes)
-    {
-        app.wordClassInput.append($("<option/>").val(app.wordClassInputes[wc]).text(app.wordClassInputes[wc]));
-    }
-
-    app.dialog = $("#dialogForm").dialog({
-        autoOpen: false,
-        height: 640,
-        width: 500,
-        modal: true,
-        close: function () {
-            app.form[0].reset();
-            app.allFields.removeClass("ui-state-error");
-        }
-    });
-
-    app.form = app.dialog.find("form").on("submit", function (event) {
-        event.preventDefault();
-        if (app.editingMode)
-            app.editEntry();
-        else
-            app.addEntry();
-    });
-
-});
 
 jQuery.fn.dataTableExt.oSort['string-case-asc'] = function (x, y) {
     return x.localeCompare(y, 'sv');
