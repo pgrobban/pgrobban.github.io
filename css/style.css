@@ -94,12 +94,12 @@ button:disabled
     color: green;
 }
 
-#deleteEntriesButton::before
+#deleteSelectedEntriesButton::before
 {
     color: red;
 }
 
-#deleteEntriesButton:hover:enabled
+#deleteSelectedEntriesButton:hover:enabled
 {
     background-color: tomato;
 }

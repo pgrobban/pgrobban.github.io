@@ -18,7 +18,7 @@ $(document).ready(function () {
 
     $("#newEntryButton").on("click", app.openNewEntryDialog);
     $("#editEntryButton").on("click", app.openEditEntryDialog);
-    $("#deleteEntriesButton").on("click", app.deleteEntries);
+    $("#deleteSelectedEntriesButton").on("click", app.deleteSelectedEntries);
     $("#exportButton").on('click', app.exportEntriesAsJSON);
 
     $("#importButton").on("click", function () {
@@ -35,16 +35,11 @@ $(document).ready(function () {
         app.table.search($(this).val()).draw();
     });
 
-    $('html').keyup(function (e) {
-        if (e.keyCode === 46)
-            deleteEntries();
-    });
-
     // key events
     Mousetrap.bind('mod+n', function () {
         app.openNewEntryDialog();
         return false;
     });
-
+    Mousetrap.bind("del", app.deleteSelectedEntries);
 
 });

@@ -140,12 +140,12 @@ app.toggleSelectedRow = function () {
     if (app.table.rows(".selected").data().length === 0)
     {
         $("#editEntryButton").prop('disabled', true);
-        $("#deleteEntriesButton").prop('disabled', true);
+        $("#deleteSelectedEntriesButton").prop('disabled', true);
     }
     else
     {
         $("#editEntryButton").prop('disabled', false);
-        $("#deleteEntriesButton").prop('disabled', false);
+        $("#deleteSelectedEntriesButton").prop('disabled', false);
     }
 };
 
@@ -374,7 +374,7 @@ app.updateTips = function (t) {
 };
 
 
-app.deleteEntries = function ()
+app.deleteSelectedEntries = function ()
 {
     var selectedRowCount = app.table.row('.selected').length;
     if (selectedRowCount === 0)
@@ -488,6 +488,7 @@ app.tryParseJSONFile = function ()
 jQuery.fn.dataTableExt.oSort['string-case-asc'] = function (x, y) {
     x = x.replace(/\(?(en|ett)\)? /i, "");
     y = y.replace(/\(?(en|ett)\)? /i, "");
+    console.log(x + " " + y);
     return x.localeCompare(y, 'sv');
 };
 
