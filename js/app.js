@@ -489,6 +489,7 @@ app.tryParseJSONFile = function ()
                 app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
             }
             app.table.draw();
+            $("#clearTableButton").attr("disabled", false);
         };
 
         reader.readAsText(file);
