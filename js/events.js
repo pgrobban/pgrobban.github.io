@@ -5,6 +5,10 @@ $(document).ready(function () {
         var currentWordClass = $("#wordClass").val();
         app.wordClassChanged(currentWordClass);
     });
+    
+    $("#ignoreArticlesWhenSorting").change(function() { 
+        app.ignoreEntriesWhenSorting = $("#ignoreArticlesWhenSorting").is(':checked');
+    });
 
     $('#glosTable tbody').on('click', 'tr', function () {
         app.toggleSelectedRow.call(this);

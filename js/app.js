@@ -7,9 +7,6 @@ $(document).ready(function () {
         "order": [[0, "asc"]],
         "iDisplayLength": 25,
         dom: '<"top"i>CTrt<"bottom"lp><"clear">',
-        "columnDefs": [
-            {"type": "string", "targets": 0}
-        ],
         "oTableTools": {
             "sSwfPath": "swf/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -46,9 +43,9 @@ $(document).ready(function () {
     app.tipsBox = $(".validateTips");
 
     // set up word classes
-    for (var wc in app.wordClassInputes)
+    for (var wc in app.wordClasses)
     {
-        app.wordClassInput.append($("<option/>").val(app.wordClassInputes[wc]).text(app.wordClassInputes[wc]));
+        app.wordClassInput.append($("<option/>").val(app.wordClasses[wc]).text(app.wordClasses[wc]));
     }
 
     app.dialog = $("#dialogForm").dialog({
@@ -74,9 +71,11 @@ $(document).ready(function () {
 
 
 app.editingMode = false;
+app.ignoreEntriesWhenSorting = true;
+
 app.entries = [];
 
-app.wordClassInputes = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "Other pronoun",
+app.wordClasses = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "Other pronoun",
     "Conjunction", "Interjection", "Preposition", "Numeral", "Phrase/Expression/Proverb", "Other"];
 
 app.wordClassDictionaryFormTips = {};
@@ -254,7 +253,6 @@ app.exportEntriesAsJSON = function ()
 
 app.prettifyOptionalWordForms = function (inputOptionalForms)
 {
-    console.log(inputOptionalForms);
     var result = "";
     for (var i in inputOptionalForms)
     {
@@ -495,7 +493,7 @@ app.tryParseJSONFile = function ()
             app.entries = JSON.parse(contents);
 
             console.log("Parsed array from file:");
-            console.log(contents);
+            console.log(app.entries);
             for (var e in app.entries)
             {
                 var entry = app.entries[e];
@@ -523,14 +521,24 @@ app.tryParseJSONFile = function ()
 };
 
 
+jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    "string-pre": function (a) {
+        a = a.toLowerCase();
+        console.log(app.ignoreEntriesWhenSorting);
+        if (!app.ignoreEntriesWhenSorting)
+            return a;
+        else
+            return a.replace(/\(?(en|ett|att)\)? /i, "");
+    },
+    "string-asc": function (a, b) {
+        return a.localeCompare(b, 'sv');
+    },
+    "string-desc": function (a, b) {
+        return b.localeCompare(a, "sv");
+    }
+});
 
 
-jQuery.fn.dataTableExt.oSort['string-asc'] = function (x, y) {
-    x = x.replace(/\(?(en|ett)\)? /i, "");
-    y = y.replace(/\(?(en|ett)\)? /i, "");
-    console.log(x + " " + y);
-    return x.toLowerCase().localeCompare(y.toLowerCase(), 'sv');
-};
 
 if (typeof String.prototype.startsWith !== 'function') {
     // see below for better implementation!

@@ -26,7 +26,11 @@ body
 
 
 label, input, textarea {
-    display:block; 
+    display: block; 
+}
+input[type='checkbox']
+{
+    display: inline;
 }
 .fieldTips
 {
@@ -34,7 +38,6 @@ label, input, textarea {
     font-weight: normal;
     margin-left: 0.5em;
 }
-
 input.text, textarea, #nounArticles, #wordClass { margin-bottom:1em; width:100%; padding: .4em; }
 fieldset { padding:0; border:0; margin-top:0.5em; }
 .ui-dialog .ui-state-error { padding: .3em; }
