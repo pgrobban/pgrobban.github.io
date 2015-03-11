@@ -38,7 +38,8 @@ $(document).ready(function () {
     app.wordClassInput = $("#wordClass");
     app.pronunciationInput = $("#pronunciation");
     app.usageNotesInput = $("#usageNotes");
-    app.allFieldsForValidation = $([]).add(app.swedishDictionaryFormInput).add(app.definitionInput).add(app.wordClassInput);
+    app.nounArticlesInput = $("#nounArticles");
+    app.allFieldsForValidation = $([]).add(app.swedishDictionaryFormInput).add(app.definitionInput).add(app.wordClassInput).add(app.nounArticlesInput);
     app.tipsBox = $(".validateTips");
 
     // set up word classes
@@ -326,9 +327,15 @@ app.validateEntry = function ()
     var valid = true;
     app.allFieldsForValidation.removeClass("ui-state-error");
 
-    valid = valid && app.checkNotChosenWordClass();
+    valid = valid && app.checkNotChosenOption(app.wordClassInput, " word class.");
+
+    if (app.wordClassInput.val() === "Noun")
+        valid = valid && app.checkNotChosenOption(app.nounArticlesInput, " noun article.");
+
     valid = valid && app.checkNotEmpty(app.swedishDictionaryFormInput, "Swedish dictionary form");
     valid = valid && app.checkNotEmpty(app.definitionInput, "Definition");
+
+
     if (!valid)
         app.dialog.animate({scrollTop: 0}, "medium");
 
@@ -336,11 +343,11 @@ app.validateEntry = function ()
 };
 
 
-app.checkNotChosenWordClass = function ()
+app.checkNotChosenOption = function (o, name)
 {
-    if (app.wordClassInput.val() === null) {
-        app.wordClassInput.addClass("ui-state-error");
-        app.updateTips("Please select a word class.");
+    if (o.val() === null) {
+        o.addClass("ui-state-error");
+        app.updateTips("Please select a " + name);
         return false;
     } else {
         return true;
@@ -479,6 +486,8 @@ app.tryParseJSONFile = function ()
 
 
 jQuery.fn.dataTableExt.oSort['string-case-asc'] = function (x, y) {
+    x = x.replace(/\(?(en|ett)\)? /i, "");
+    y = y.replace(/\(?(en|ett)\)? /i, "");
     return x.localeCompare(y, 'sv');
 };
 
