@@ -224,7 +224,11 @@ app.editEntry = function ()
         app.entries[selectedIndex] = entry;
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         app.table.row('.selected').remove().draw(false);
-        app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+        if (entry.wordClass === "Noun")
+            var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+        else
+            var displayedSwedish = entry.swedishDictionaryForm;
+        app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
 
         $("#nounArticles").hide();
         app.dialog.dialog("close");
@@ -345,7 +349,7 @@ app.validateEntry = function ()
 
 app.checkNotChosenOption = function (o, name)
 {
-    if (o.val() === null) {
+    if (o.val() === null || o.val === "-") { // - is hack for noun article
         o.addClass("ui-state-error");
         app.updateTips("Please select a " + name);
         return false;
@@ -402,7 +406,7 @@ app.clearTable = function ()
 {
     if (!confirm("This will remove all data in the table. Any unsaved entries will be lost. Continue?"))
         return;
-    
+
     app.table.clear().draw();
     app.entries = [];
     $("#clearTableButton").attr("disabled", true);
@@ -499,7 +503,7 @@ jQuery.fn.dataTableExt.oSort['string-case-asc'] = function (x, y) {
     x = x.replace(/\(?(en|ett)\)? /i, "");
     y = y.replace(/\(?(en|ett)\)? /i, "");
     console.log(x + " " + y);
-    return x.localeCompare(y, 'sv');
+    return x.toLowerCase().localeCompare(y.toLowerCase(), 'sv');
 };
 
 if (typeof String.prototype.startsWith !== 'function') {
