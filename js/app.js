@@ -7,6 +7,9 @@ $(document).ready(function () {
         "order": [[0, "asc"]],
         "iDisplayLength": 25,
         dom: '<"top"i>CTrt<"bottom"lp><"clear">',
+        "columnDefs": [
+            {"type": "string", "targets": 0}
+        ],
         "oTableTools": {
             "sSwfPath": "swf/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -189,7 +192,12 @@ app.addEntry = function ()
         app.entries.push(entry);
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         if (entry.wordClass === "Noun")
-            var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+        {
+            if (entry.swedishDictionaryForm.article === "")
+                var displayedSwedish = entry.swedishDictionaryForm.value;
+            else
+                var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+        }
         else
             var displayedSwedish = entry.swedishDictionaryForm;
 
@@ -231,7 +239,7 @@ app.editEntry = function ()
         else
             var displayedSwedish = entry.swedishDictionaryForm;
         app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
-        
+
         $("#exportButton").attr("disabled", false);
         $("#nounArticles").hide();
         app.dialog.dialog("close");
@@ -492,7 +500,12 @@ app.tryParseJSONFile = function ()
             {
                 var entry = app.entries[e];
                 if (entry.wordClass === "Noun")
-                    var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+                {
+                    if (entry.swedishDictionaryForm.article === "")
+                        var displayedSwedish = entry.swedishDictionaryForm.value;
+                    else
+                        var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+                }
                 else
                     var displayedSwedish = entry.swedishDictionaryForm;
 
@@ -512,7 +525,7 @@ app.tryParseJSONFile = function ()
 
 
 
-jQuery.fn.dataTableExt.oSort['string-case-asc'] = function (x, y) {
+jQuery.fn.dataTableExt.oSort['string-asc'] = function (x, y) {
     x = x.replace(/\(?(en|ett)\)? /i, "");
     y = y.replace(/\(?(en|ett)\)? /i, "");
     console.log(x + " " + y);
