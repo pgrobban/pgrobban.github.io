@@ -316,9 +316,15 @@ app.wordClassChanged = function (currentWordClass)
     $("#mandatoryData, #optionalData").show("medium");
     $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[currentWordClass]);
     if (currentWordClass === "Noun")
+    {
         $("#nounArticles").show();
+        $("#nounArticles").focus();
+    }
     else
+    {
         $("#nounArticles").hide();
+        app.swedishDictionaryFormInput.focus();
+    }
 
     app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[currentWordClass]);
 };
