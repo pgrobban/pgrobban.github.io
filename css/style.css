@@ -94,12 +94,12 @@ button:disabled
     color: green;
 }
 
-#deleteSelectedEntriesButton::before
+#deleteSelectedEntriesButton::before, #clearTableButton::before
 {
     color: red;
 }
 
-#deleteSelectedEntriesButton:hover:enabled
+#deleteSelectedEntriesButton:hover:enabled, #clearTableButton:hover:enabled
 {
     background-color: tomato;
 }

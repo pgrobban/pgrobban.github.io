@@ -19,8 +19,9 @@ $(document).ready(function () {
     $("#newEntryButton").on("click", app.openNewEntryDialog);
     $("#editEntryButton").on("click", app.openEditEntryDialog);
     $("#deleteSelectedEntriesButton").on("click", app.deleteSelectedEntries);
+    $("#clearTableButton").on("click", app.clearTable);
+    
     $("#exportButton").on('click', app.exportEntriesAsJSON);
-
     $("#importButton").on("click", function () {
         if (app.entries.length > 0)
             if (!confirm("This will overwrite the current entry table. Continue?"))

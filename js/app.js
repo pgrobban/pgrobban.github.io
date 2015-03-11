@@ -194,7 +194,7 @@ app.addEntry = function ()
         app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
 
         $("#nounArticles").hide();
-        $("#exportButton").attr("disabled", false);
+        $("#clearTableButton, #exportButton").attr("disabled", false);
         app.dialog.dialog("close");
     }
 };
@@ -394,8 +394,18 @@ app.deleteSelectedEntries = function ()
         $("#editEntryButton").attr("disabled", true);
 
         if (app.entries.length === 0)
-            $("#exportButton").attr("disabled", true);
+            $("#exportButton, #clearTableButton, #deleteSelectedEntriesButton").attr("disabled", true);
     }
+};
+
+app.clearTable = function ()
+{
+    if (!confirm("This will remove all data in the table. Any unsaved entries will be lost. Continue?"))
+        return;
+    
+    app.table.clear().draw();
+    app.entries = [];
+    $("#clearTableButton").attr("disabled", true);
 };
 
 app.getOptionalWordForms = function ()
