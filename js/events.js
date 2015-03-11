@@ -3,8 +3,7 @@ $(document).ready(function () {
 
     $("#wordClass").change(function () {
         var currentWordClass = $("#wordClass").val();
-        $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[currentWordClass]);
-        app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[currentWordClass]);
+        app.wordClassChanged(currentWordClass);
     });
 
     $('#glosTable tbody').on('click', 'tr', function () {
@@ -46,7 +45,6 @@ $(document).ready(function () {
         app.openNewEntryDialog();
         return false;
     });
-
 
 
 });

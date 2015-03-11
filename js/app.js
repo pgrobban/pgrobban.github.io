@@ -119,6 +119,7 @@ app.openNewEntryDialog = function () {
             click: app.addEntry
         }
     ]);
+    $("#nounArticles").hide();
     $("#additionalForms").empty();
     app.dialog.dialog("open");
     app.dialog.dialog("option", "title", "Add new entry");
@@ -151,11 +152,22 @@ app.toggleSelectedRow = function () {
 app.getInputData = function ()
 {
     var newEntry = {};
-    newEntry.swedishDictionaryForm = app.swedishDictionaryFormInput.val().trim();
+    newEntry.wordClass = app.wordClassInput.val();
+
+    if (newEntry.wordClass === "Noun")
+    {
+        newEntry.swedishDictionaryForm = {};
+        newEntry.swedishDictionaryForm.article = $("#nounArticles").val();
+        newEntry.swedishDictionaryForm.value = app.swedishDictionaryFormInput.val().trim();
+    }
+    else
+    {
+        newEntry.swedishDictionaryForm = app.swedishDictionaryFormInput.val().trim();
+    }
+
     newEntry.pronunciation = app.pronunciationInput.val().trim();
     newEntry.usageNotes = app.usageNotesInput.val().trim();
     newEntry.definition = app.definitionInput.val().trim();
-    newEntry.wordClass = app.wordClassInput.val();
     newEntry.additionalForms = app.getOptionalWordForms();
     console.log("Got entry: ");
     console.log(newEntry);
@@ -171,11 +183,16 @@ app.addEntry = function ()
         var entry = app.getInputData();
         if (app.checkForPrependingParticles(entry) === false)
             return;
-
         app.entries.push(entry);
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
-        app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+        if (entry.wordClass === "Noun")
+            var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+        else
+            var displayedSwedish = entry.swedishDictionaryForm;
 
+        app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+
+        $("#nounArticles").hide();
         $("#exportButton").attr("disabled", false);
         app.dialog.dialog("close");
     }
@@ -184,13 +201,6 @@ app.addEntry = function ()
 // check for en/ett in front of nouns, att in front of verbs. returns true if the add/edit should proceed
 app.checkForPrependingParticles = function (entry)
 {
-    if (entry.wordClass === "Noun")
-    {
-        if (!(entry.swedishDictionaryForm.startsWith("en ") ||
-                entry.swedishDictionaryForm.startsWith("ett ")))
-            if (!confirm("It is recommended that you add 'en/ett' in front of nouns. Continue without doing this?"))
-                return false;
-    }
     if (entry.wordClass === "Verb")
     {
         if (!(entry.swedishDictionaryForm.startsWith("att ")))
@@ -214,6 +224,8 @@ app.editEntry = function ()
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         app.table.row('.selected').remove().draw(false);
         app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+
+        $("#nounArticles").hide();
         app.dialog.dialog("close");
     }
 };
@@ -263,18 +275,42 @@ app.openEditEntryDialog = function ()
             }
         }
     ]);
-    app.dialog.dialog("open");
-    app.dialog.dialog("option", "title", "Edit entry");
 
-    app.swedishDictionaryFormInput.val(selectedEntry.swedishDictionaryForm);
+    if (selectedEntry.wordClass === "Noun")
+    {
+        $("#nounArticles").show();
+        $("#nounArticles").val(selectedEntry.swedishDictionaryForm.article);
+        app.swedishDictionaryFormInput.val(selectedEntry.swedishDictionaryForm.value);
+    }
+    else
+    {
+        app.swedishDictionaryFormInput.val(selectedEntry.swedishDictionaryForm);
+    }
+
     app.definitionInput.val(selectedEntry.definition);
     app.pronunciationInput.val(selectedEntry.pronunciation);
     app.usageNotesInput.val(selectedEntry.usageNotes);
 
     var wordClass = selectedEntry.wordClass;
+    $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[wordClass]);
+
     app.wordClassInput.val(wordClass);
     app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClass]);
     app.setOptionalFormsToInputs(selectedEntry.additionalForms);
+
+    app.dialog.dialog("open");
+    app.dialog.dialog("option", "title", "Edit entry");
+};
+
+app.wordClassChanged = function (currentWordClass)
+{
+    $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[currentWordClass]);
+    if (currentWordClass === "Noun")
+        $("#nounArticles").show();
+    else
+        $("#nounArticles").hide();
+
+    app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[currentWordClass]);
 };
 
 app.setOptionalFormsToInputs = function (additionalForms)
@@ -422,8 +458,13 @@ app.tryParseJSONFile = function ()
             for (var e in app.entries)
             {
                 var entry = app.entries[e];
+                if (entry.wordClass === "Noun")
+                    var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+                else
+                    var displayedSwedish = entry.swedishDictionaryForm;
+
                 var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
-                app.table.row.add([entry.swedishDictionaryForm, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+                app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
             }
             app.table.draw();
         };

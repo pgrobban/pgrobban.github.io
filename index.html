@@ -96,6 +96,13 @@
                     <label for="swedishDictionaryForm">Swedish dictionary form<br/>
                         <span class="fieldTips" id="dictionaryFormTips"></span>
                     </label>
+                    <select id="nounArticles">
+                        <option selected disabled value="">Select an article</option>
+                        <option value="en">en</option>
+                        <option value="ett">ett</option>
+                        <option value="(en)">Uncountable, conjugated as en in def. form</option>
+                        <option value="(ett)">Uncountable, conjugated as ett in def. form</option>
+                    </select>
                     <input type="text" name="swedishDictionaryForm" id="swedishDictionaryForm" value="" class="text ui-widget-content ui-corner-all">
                     <label for="definition">Definition</label>
                     <input type="text" name="definition" id="definition" value="" class="text ui-widget-content ui-corner-all">
@@ -119,6 +126,7 @@
                 <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
             </form>
         </div>
+
 
     </body>
 </html>
