@@ -120,6 +120,7 @@ app.openNewEntryDialog = function () {
             click: app.addEntry
         }
     ]);
+    $("#dictionaryFormTips").text("");
     $("#nounArticles").hide();
     $("#additionalForms").empty();
     app.dialog.dialog("open");
