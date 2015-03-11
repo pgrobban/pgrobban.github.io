@@ -231,7 +231,8 @@ app.editEntry = function ()
         else
             var displayedSwedish = entry.swedishDictionaryForm;
         app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
-
+        
+        $("#exportButton").attr("disabled", false);
         $("#nounArticles").hide();
         app.dialog.dialog("close");
     }
