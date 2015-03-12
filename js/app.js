@@ -85,32 +85,32 @@ app.wordClassDictionaryFormTips["Adjective"] = "The dictionary form of an adject
 app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a personal pronoun is the subject form.";
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
 
-app.wordClassOptionalForms = {};
-app.wordClassOptionalForms["Noun"] = ["Definite singular", "Indefinite pural", "Definite plural",
+app.wordClassAdditionalForms = {};
+app.wordClassAdditionalForms["Noun"] = ["Definite singular", "Indefinite pural", "Definite plural",
     "Genitive indefinite singular", "Genitive definite singular", "Genitive indefinite plural", "Genitive definite plural"];
-app.wordClassOptionalForms["Verb"] = ["Present tense", "Past tense", "Perfect tense", "Imperative mood",
+app.wordClassAdditionalForms["Verb"] = ["Present tense", "Past tense", "Perfect tense", "Imperative mood",
     "Passive present tense", "Passive past tense", "Passive perfect tense", "Particip", "Perfekt particip"];
-app.wordClassOptionalForms["Adjective"] = ["Positive neuter", "Positive definite", "Positive definite masculine",
+app.wordClassAdditionalForms["Adjective"] = ["Positive neuter", "Positive definite", "Positive definite masculine",
     "Comparative", "Superlative", "Definite superlative", "Definite superlative masculine"];
-app.wordClassOptionalForms["Personal pronoun"] = ["Object form", "Possessive common", "Possessive neuter", "Possessive plural"];
-app.wordClassOptionalForms["Phrase/Expression/Proverb"] = ["Literal meaning"];
-app.wordClassOptionalForms["Numeral"] = ["Ordinal form", "Ordinal definite", "Ordinal definite masculine"];
+app.wordClassAdditionalForms["Personal pronoun"] = ["Object form", "Possessive common", "Possessive neuter", "Possessive plural"];
+app.wordClassAdditionalForms["Phrase/Expression/Proverb"] = ["Literal meaning"];
+app.wordClassAdditionalForms["Numeral"] = ["Ordinal form", "Ordinal definite", "Ordinal definite masculine"];
 
-app.wordClassOptionalFormTips = {};
-app.wordClassOptionalFormTips["Past tense"] = "(preterite)";
-app.wordClassOptionalFormTips["Perfect tense"] = "(supine)";
-app.wordClassOptionalFormTips["Positive neuter"] = "<i>ett</i> ~ &lt;noun&gt;";
-app.wordClassOptionalFormTips["Positive definite"] = "<i>den/det/de</i> ~ &lt;noun&gt";
-app.wordClassOptionalFormTips["Positive definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
-app.wordClassOptionalFormTips["Comparative"] = "<i>en/ett/den/det/de</i> ~ + &lt;noun&gt;";
-app.wordClassOptionalFormTips["Superlative"] = " <i>är ~</i>";
-app.wordClassOptionalFormTips["Definite superlative"] = "<i>den/det/de</i> ~ &lt;noun&gt";
-app.wordClassOptionalFormTips["Definite superlative masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
-app.wordClassOptionalFormTips["Possessive common"] = "(someone's &lt;en-noun&gt;)"
-app.wordClassOptionalFormTips["Possessive neuter"] = "(someone's &lt;ett-noun&gt;)"
-app.wordClassOptionalFormTips["Possessive plural"] = "(someone's &lt;pl. noun&gt;)"
-app.wordClassOptionalFormTips["Ordinal definite"] = "<i>den/det/de</i> ~ &lt;noun&gt;"
-app.wordClassOptionalFormTips["Ordinal definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt;";
+app.wordClassAdditionalFormTips = {};
+app.wordClassAdditionalFormTips["Past tense"] = "(preterite)";
+app.wordClassAdditionalFormTips["Perfect tense"] = "(supine)";
+app.wordClassAdditionalFormTips["Positive neuter"] = "<i>ett</i> ~ &lt;noun&gt;";
+app.wordClassAdditionalFormTips["Positive definite"] = "<i>den/det/de</i> ~ &lt;noun&gt";
+app.wordClassAdditionalFormTips["Positive definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
+app.wordClassAdditionalFormTips["Comparative"] = "<i>en/ett/den/det/de</i> ~ + &lt;noun&gt;";
+app.wordClassAdditionalFormTips["Superlative"] = " <i>är ~</i>";
+app.wordClassAdditionalFormTips["Definite superlative"] = "<i>den/det/de</i> ~ &lt;noun&gt";
+app.wordClassAdditionalFormTips["Definite superlative masculine"] = "<i>den</i> ~ &lt;masc. noun&gt";
+app.wordClassAdditionalFormTips["Possessive common"] = "(someone's &lt;en-noun&gt;)";
+app.wordClassAdditionalFormTips["Possessive neuter"] = "(someone's &lt;ett-noun&gt;)";
+app.wordClassAdditionalFormTips["Possessive plural"] = "(someone's &lt;pl. noun&gt;)";
+app.wordClassAdditionalFormTips["Ordinal definite"] = "<i>den/det/de</i> ~ &lt;noun&gt;";
+app.wordClassAdditionalFormTips["Ordinal definite masculine"] = "<i>den</i> ~ &lt;masc. noun&gt;";
 
 
 
@@ -173,7 +173,7 @@ app.getInputData = function ()
     newEntry.pronunciation = app.pronunciationInput.val().trim();
     newEntry.usageNotes = app.usageNotesInput.val().trim();
     newEntry.definition = app.definitionInput.val().trim();
-    newEntry.additionalForms = app.getOptionalWordForms();
+    newEntry.additionalForms = app.getAdditionalWordForms();
     console.log("Got entry: ");
     console.log(newEntry);
     return newEntry;
@@ -311,8 +311,8 @@ app.openEditEntryDialog = function ()
     $("#dictionaryFormTips").html(app.wordClassDictionaryFormTips[wordClass]);
 
     app.wordClassInput.val(wordClass);
-    app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[wordClass]);
-    app.setOptionalFormsToInputs(selectedEntry.additionalForms);
+    app.setupAdditionalFormLabelsAndInputs(app.wordClassAdditionalForms[wordClass]);
+    app.setAdditionalFormsToInputs(selectedEntry.additionalForms);
 
     app.dialog.dialog("open");
     app.dialog.dialog("option", "title", "Edit entry");
@@ -333,10 +333,10 @@ app.wordClassChanged = function (currentWordClass)
         app.swedishDictionaryFormInput.focus();
     }
 
-    app.setupOptionalFormLabelsAndInputs(app.wordClassOptionalForms[currentWordClass]);
+    app.setupAdditionalFormLabelsAndInputs(app.wordClassAdditionalForms[currentWordClass]);
 };
 
-app.setOptionalFormsToInputs = function (additionalForms)
+app.setAdditionalFormsToInputs = function (additionalForms)
 {
     console.log(additionalForms);
     $.each(additionalForms, function (index, v) {
@@ -430,11 +430,11 @@ app.clearTable = function ()
     $("#clearTableButton").attr("disabled", true);
 };
 
-app.getOptionalWordForms = function ()
+app.getAdditionalWordForms = function ()
 {
     var inputOptionalFormsArrayOfObjects = [];
 
-    var currentWordClassOptionalForms = app.wordClassOptionalForms[app.wordClassInput.val()];
+    var currentWordClassOptionalForms = app.wordClassAdditionalForms[app.wordClassInput.val()];
 
     for (var form in currentWordClassOptionalForms)
     {
@@ -447,8 +447,11 @@ app.getOptionalWordForms = function ()
     return inputOptionalFormsArrayOfObjects;
 };
 
-app.setupOptionalFormLabelsAndInputs = function (additionalForms)
+app.setupAdditionalFormLabelsAndInputs = function (additionalForms)
 {
+    if (additionalForms === undefined) // can happen if the word class does not have additional forms
+        return;
+    
     var additionalFormsDiv = $("#additionalForms");
     additionalFormsDiv.empty();
 
@@ -462,7 +465,7 @@ app.setupOptionalFormLabelsAndInputs = function (additionalForms)
         var formLabel = $("<label>").attr("for", formName).text(formName);
         formLabel.append($("<span>")
                 .addClass("fieldTips")
-                .html(app.wordClassOptionalFormTips[formName]));
+                .html(app.wordClassAdditionalFormTips[formName]));
         additionalFormsDiv.append(formLabel);
 
         additionalFormsDiv.append($("<input>").attr({
