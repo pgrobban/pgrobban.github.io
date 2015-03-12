@@ -86,7 +86,7 @@ app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a 
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
 
 app.wordClassAdditionalForms = {};
-app.wordClassAdditionalForms["Noun"] = ["Definite singular", "Indefinite pural", "Definite plural",
+app.wordClassAdditionalForms["Noun"] = ["Definite singular", "Indefinite plural", "Definite plural",
     "Genitive indefinite singular", "Genitive definite singular", "Genitive indefinite plural", "Genitive definite plural"];
 app.wordClassAdditionalForms["Verb"] = ["Present tense", "Past tense", "Perfect tense", "Imperative mood",
     "Passive present tense", "Passive past tense", "Passive perfect tense", "Particip", "Perfekt particip"];
