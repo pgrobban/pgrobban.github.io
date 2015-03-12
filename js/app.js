@@ -84,7 +84,7 @@ app.wordClasses = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "O
 
 app.wordClassDictionaryFormTips = {};
 app.wordClassDictionaryFormTips["Noun"] = "The dictionary form of a noun is the indefinite singular form. (<i>en/ett</i> ~)";
-app.wordClassDictionaryFormTips["Verb"] = "The dictionary form of a verb is the infinitive form (<i>att</i> ~)";
+app.wordClassDictionaryFormTips["Verb"] = "The dictionary form of a verb is the infinitive form";
 app.wordClassDictionaryFormTips["Adjective"] = "The dictionary form of an adjective is the positive <i>en</i>-form.";
 app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a personal pronoun is the subject form.";
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
@@ -335,6 +335,11 @@ app.wordClassChanged = function (currentWordClass)
     {
         $("#nounArticles").hide();
         app.swedishDictionaryFormInput.focus();
+    }
+    
+    if (currentWordClass === "Verb")
+    {
+        app.swedishDictionaryFormInput.val("att ").focus();
     }
 
     app.setupAdditionalFormLabelsAndInputs(app.wordClassAdditionalForms[currentWordClass]);
