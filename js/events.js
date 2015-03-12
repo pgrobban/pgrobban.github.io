@@ -8,6 +8,9 @@ $(document).ready(function () {
     
     $("#ignoreArticlesWhenSorting").change(function() { 
         app.ignoreEntriesWhenSorting = $("#ignoreArticlesWhenSorting").is(':checked');
+        // force resort - ugly hack
+        app.table.rows().remove().draw(false); // clear the table
+        app.populateTableFromArray(app.entries); // repopulate it from existing app.entries array
     });
 
     $('#glosTable tbody').on('click', 'tr', function () {

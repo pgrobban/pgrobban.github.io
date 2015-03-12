@@ -490,27 +490,12 @@ app.tryParseJSONFile = function ()
             // try to make table
             app.table.clear().draw();
 
-            app.entries = JSON.parse(contents);
-
+            var entries = JSON.parse(contents);
             console.log("Parsed array from file:");
-            console.log(app.entries);
-            for (var e in app.entries)
-            {
-                var entry = app.entries[e];
-                if (entry.wordClass === "Noun")
-                {
-                    if (entry.swedishDictionaryForm.article === "")
-                        var displayedSwedish = entry.swedishDictionaryForm.value;
-                    else
-                        var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
-                }
-                else
-                    var displayedSwedish = entry.swedishDictionaryForm;
-
-                var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
-                app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
-            }
-            app.table.draw();
+            console.log(entries);
+            
+            app.populateTableFromArray(entries);
+            
             $("#clearTableButton").attr("disabled", false);
         };
 
@@ -518,6 +503,28 @@ app.tryParseJSONFile = function ()
     } else {
         alert("File not supported");
     }
+};
+
+app.populateTableFromArray = function (entries)
+{
+    app.entries = entries;
+    for (var e in app.entries)
+    {
+        var entry = app.entries[e];
+        if (entry.wordClass === "Noun")
+        {
+            if (entry.swedishDictionaryForm.article === "")
+                var displayedSwedish = entry.swedishDictionaryForm.value;
+            else
+                var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
+        }
+        else
+            var displayedSwedish = entry.swedishDictionaryForm;
+
+        var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
+        app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+    }
+    app.table.draw();
 };
 
 
