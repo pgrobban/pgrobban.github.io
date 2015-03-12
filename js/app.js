@@ -536,7 +536,7 @@ jQuery.extend(jQuery.fn.dataTableExt.oSort, {
         a = a.toLowerCase();
         console.log(app.ignoreEntriesWhenSorting);
         if (!app.ignoreEntriesWhenSorting)
-            return a;
+            return a.replace("(", "").replace(")", "");
         else
             return a.replace(/\(?(en|ett|att)\)? /i, "");
     },
