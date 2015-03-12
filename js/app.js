@@ -6,7 +6,7 @@ $(document).ready(function () {
     app.table = $('#glosTable').DataTable({
         "order": [[0, "asc"]],
         "iDisplayLength": 25,
-        dom: '<"top"i>CTrt<"bottom"lp><"clear">',
+        dom: '<"top"i>Trt<"bottom"lp><"clear">',
         "oTableTools": {
             "sSwfPath": "swf/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -31,6 +31,10 @@ $(document).ready(function () {
             ]
         }
     });
+    var colvis = new $.fn.dataTable.ColVis( app.table, {
+        buttonText: 'Select columns'
+    } );
+    $("#tableMenu").append($( colvis.button() ));
     $(".ColVis_Button").addClass("fa fa-table");
 
     app.swedishDictionaryFormInput = $("#swedishDictionaryForm");

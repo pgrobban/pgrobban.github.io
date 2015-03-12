@@ -28,9 +28,17 @@ body
 label, input, textarea {
     display: block; 
 }
-input[type='checkbox']
+#ignoreArticlesWhenSorting
 {
     display: inline;
+    margin: 0 3px;
+    vertical-align: middle;
+    height: 30px;
+}
+.checkboxlabel
+{
+    display:inline;
+    font-weight: normal;
 }
 .fieldTips
 {
@@ -45,10 +53,11 @@ fieldset { padding:0; border:0; margin-top:0.5em; }
 
 .dataTables_length label{ font-weight: normal; }
 
-#menu
+#menu, #tableMenu
 {
     float: left;
     margin-bottom: 1em;
+    width: 100%;
 }
 
 .menuGroup
@@ -113,6 +122,10 @@ button:disabled
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * ColVis styles
  */
+.ColVis
+{
+    display: inline;
+}
 
 ul.ColVis_collection li {
     position: relative;
@@ -137,7 +150,6 @@ ul.ColVis_collection li:hover {
 }
 
 button.ColVis_Button {
-    margin-left: 3em;
     font-size: 0.8em;
 }
 
