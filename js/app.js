@@ -84,7 +84,7 @@ app.wordClasses = ["Noun", "Verb", "Adjective", "Adverb", "Personal pronoun", "O
 
 app.wordClassDictionaryFormTips = {};
 app.wordClassDictionaryFormTips["Noun"] = "The dictionary form of a noun is the indefinite singular form. (<i>en/ett</i> ~)";
-app.wordClassDictionaryFormTips["Verb"] = "The dictionary form of a verb is the infinitive form";
+app.wordClassDictionaryFormTips["Verb"] = "The dictionary form of a verb is the infinitive form.";
 app.wordClassDictionaryFormTips["Adjective"] = "The dictionary form of an adjective is the positive <i>en</i>-form.";
 app.wordClassDictionaryFormTips["Personal pronoun"] = "The dictionary form of a personal pronoun is the subject form.";
 app.wordClassDictionaryFormTips["Numeral"] = "The dictionary form of a numeral is the cardinal form.";
@@ -190,8 +190,6 @@ app.addEntry = function ()
     if (valid)
     {
         var entry = app.getInputData();
-        if (app.checkForPrependingParticles(entry) === false)
-            return;
         app.entries.push(entry);
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         if (entry.wordClass === "Noun")
@@ -212,18 +210,6 @@ app.addEntry = function ()
     }
 };
 
-// check for en/ett in front of nouns, att in front of verbs. returns true if the add/edit should proceed
-app.checkForPrependingParticles = function (entry)
-{
-    if (entry.wordClass === "Verb")
-    {
-        if (!(entry.swedishDictionaryForm.startsWith("att ")))
-            if (!confirm("It is recommended that you add 'att' in front of verbs. Continue without doing this?"))
-                return false;
-    }
-    return true;
-}
-
 
 app.editEntry = function ()
 {
@@ -231,8 +217,6 @@ app.editEntry = function ()
     if (valid)
     {
         var entry = app.getInputData();
-        if (app.checkForPrependingParticles(entry) === false)
-            return;
         var selectedIndex = app.table.row(".selected").index();
         app.entries[selectedIndex] = entry;
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
@@ -340,6 +324,11 @@ app.wordClassChanged = function (currentWordClass)
     if (currentWordClass === "Verb")
     {
         app.swedishDictionaryFormInput.val("att ").focus();
+    }
+    else
+    {
+        if (app.swedishDictionaryFormInput.val() === "att ")
+            app.swedishDictionaryFormInput.val("");
     }
 
     app.setupAdditionalFormLabelsAndInputs(app.wordClassAdditionalForms[currentWordClass]);
