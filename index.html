@@ -25,7 +25,6 @@
         <script type="text/javascript" src="//www.datatables.net/release-datatables/extensions/TableTools/js/dataTables.tableTools.js"></script>
         <script type="text/javascript" src="//datatables.net/release-datatables/extensions/ColVis/js/dataTables.colVis.js"></script>
 
-        <script src="js/FileSaver.min.js"></script>
         <script src="js/json2.js"></script>
         <script src="js/mousetrap.min.js"></script>
 
@@ -36,10 +35,10 @@
 
     <body>
         <h1 id="logo">GlosTrainer</h1>
-        <div id="menu">
+        <div id="entryMenu" class="menu">
             <div class="menuGroup">
-                <button id="importButton" class="fa fa-upload">Load from JSON</button>
-                <button id="exportButton" class="fa fa-download" disabled="disabled">Save to JSON (importable file)</button>
+                <button id="importButton" class="fa fa-upload">Load from file</button>
+                <button id="exportButton" class="fa fa-download" disabled="disabled">Save to importable file</button>
                 <input type="file" id="fileInput" name="files" title="Load File" /> <!-- hidden -->
             </div>
             <div class="menuGroup">
@@ -54,10 +53,12 @@
                 <button id="clearTableButton" class="fa fa-trash-o" disabled="disabled">Clear table</button>
             </div>
         </div>
-        
-        <div id="tableMenu">
-            <input id="ignoreArticlesWhenSorting" type="checkbox" checked="checked">
-            <label for="ignoreArticlesWhenSorting" class="checkboxlabel">Ignore articles (en/ett/att) when sorting</label>
+
+        <div id="tableMenu" class="menu">
+            <div class="menuGroup">
+                <input id="ignoreArticlesWhenSorting" type="checkbox" checked="checked">            
+                <label for="ignoreArticlesWhenSorting" class="checkboxlabel">Ignore articles (en/ett/att) when sorting</label>
+            </div>
         </div>
 
         <table id="glosTable" class="display">

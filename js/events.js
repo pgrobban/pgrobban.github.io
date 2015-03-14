@@ -35,6 +35,11 @@ $(document).ready(function () {
                 return;
         $("#fileInput").click();
     });
+    
+    function errorHandler(error)
+    {
+        console.log(error);
+    }
 
 
     $("#fileInput").change(app.tryParseJSONFile);

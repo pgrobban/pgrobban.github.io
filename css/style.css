@@ -53,19 +53,28 @@ fieldset { padding:0; border:0; margin-top:0.5em; }
 
 .dataTables_length label{ font-weight: normal; }
 
-#menu, #tableMenu
+.menu{
+    width: 100%;
+}
+
+.menu :last-child
+{
+    margin-right:0;
+}
+
+#entryMenu, #tableMenu
 {
     float: left;
     margin-bottom: 1em;
-    width: 100%;
 }
 
 .menuGroup
 {
     display: inline;
-    float: Left;
+    float: left;
     margin-right: 50px;
 }
+
 
 #filterBox
 {
@@ -85,6 +94,11 @@ button
     border-radius: 3px;
     box-shadow: 1px 1px 3px #ccc;
     background: #fff;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif !important; /* windows */
+}
+.fa::before
+{
+    font-family: "FontAwesome" !important; /* windows */
 }
 button:hover
 {

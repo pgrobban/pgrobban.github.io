@@ -6,7 +6,7 @@ $(document).ready(function () {
     app.table = $('#glosTable').DataTable({
         "order": [[0, "asc"]],
         "iDisplayLength": 25,
-        dom: '<"top"i>Trt<"bottom"lp><"clear">',
+        dom: '<"top"i>Trt<"bottom"p><"clear">',
         "oTableTools": {
             "sSwfPath": "swf/copy_csv_xls_pdf.swf",
             "aButtons": [
@@ -31,10 +31,10 @@ $(document).ready(function () {
             ]
         }
     });
-    var colvis = new $.fn.dataTable.ColVis( app.table, {
-        buttonText: 'Select columns'
-    } );
-    $("#tableMenu").append($( colvis.button() ));
+    var colvis = new $.fn.dataTable.ColVis(app.table, {
+        buttonText: 'Show/hide columns'
+    });
+    $("#tableMenu").append($(colvis.button()));
     $(".ColVis_Button").addClass("fa fa-table");
 
     app.swedishDictionaryFormInput = $("#swedishDictionaryForm");
@@ -233,11 +233,7 @@ app.editEntry = function ()
     }
 };
 
-app.exportEntriesAsJSON = function ()
-{
-    var file = new File([JSON.stringify(app.entries, null, '\t')], {type: "data:text/json;charset=utf8"});
-    saveAs(file, "My word list.json");
-};
+
 
 app.prettifyOptionalWordForms = function (inputOptionalForms)
 {
@@ -320,7 +316,7 @@ app.wordClassChanged = function (currentWordClass)
         $("#nounArticles").hide();
         app.swedishDictionaryFormInput.focus();
     }
-    
+
     if (currentWordClass === "Verb")
     {
         app.swedishDictionaryFormInput.val("att ").focus();
@@ -449,7 +445,7 @@ app.setupAdditionalFormLabelsAndInputs = function (additionalForms)
 {
     if (additionalForms === undefined) // can happen if the word class does not have additional forms
         return;
-    
+
     var additionalFormsDiv = $("#additionalForms");
     additionalFormsDiv.empty();
 
@@ -475,13 +471,26 @@ app.setupAdditionalFormLabelsAndInputs = function (additionalForms)
     }
 };
 
+app.exportEntriesAsJSON = function ()
+{
+    var blob = new Blob([JSON.stringify(app.entries, null, '\t')], {type: "text/plain;charset=UTF-8"});
+    var url = window.URL.createObjectURL(blob);
+    console.log(url);
+    
+    // hacky
+    var a = document.createElement('a');
+    a.download = "My word list.txt";
+    a.href = url;
+    a.click();
+};
 
 app.tryParseJSONFile = function ()
 {
 
     // try to read file
     var file = document.getElementById('fileInput').files[0];
-    var textType = /application\/json.*/;
+    console.log(file.type);
+    var textType = /text\/plain.*/;
 
     if (file.type.match(textType)) {
         var reader = new FileReader();
@@ -494,9 +503,9 @@ app.tryParseJSONFile = function ()
             var entries = JSON.parse(contents);
             console.log("Parsed array from file:");
             console.log(entries);
-            
+
             app.populateTableFromArray(entries);
-            
+
             $("#clearTableButton").attr("disabled", false);
         };
 
