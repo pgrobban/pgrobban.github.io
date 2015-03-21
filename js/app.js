@@ -1,3 +1,5 @@
+"use strict";
+
 var app = {};
 
 $(document).ready(function () {
@@ -450,7 +452,7 @@ app.setupAdditionalFormLabelsAndInputs = function (additionalForms)
     additionalFormsDiv.empty();
 
     if (additionalForms.length > 0)
-        additionalFormsDiv.append("<h3 class='formHeader'>Additional forms/conjugations</h3>");
+        additionalFormsDiv.append("<h3 class='formHeader'>Inflections/Additional forms</h3>");
 
     for (var wco in additionalForms)
     {
@@ -476,7 +478,7 @@ app.exportEntriesAsJSON = function ()
     var blob = new Blob([JSON.stringify(app.entries, null, '\t')], {type: "text/plain;charset=UTF-8"});
     var url = window.URL.createObjectURL(blob);
     console.log(url);
-    
+
     // hacky
     var a = document.createElement('a');
     a.download = "My word list.txt";
@@ -541,7 +543,6 @@ app.populateTableFromArray = function (entries)
 jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     "string-pre": function (a) {
         a = a.toLowerCase();
-        console.log(app.ignoreEntriesWhenSorting);
         if (!app.ignoreEntriesWhenSorting)
             return a.replace("(", "").replace(")", "");
         else
