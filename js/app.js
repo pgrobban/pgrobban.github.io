@@ -407,7 +407,7 @@ app.deleteSelectedEntries = function ()
         console.log("Deleting selected indexes");
         var selectedIndices = app.table.rows(".selected").indexes();
         console.log(selectedIndices);
-        for (var i = 0; i < selectedIndices.length; i++)
+        for (var i = selectedIndices.length-1; i >= 0; i--)
         {
             console.log("Deleting index " + selectedIndices[i]);
             app.entries.splice(selectedIndices[i], 1);
