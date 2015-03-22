@@ -409,7 +409,8 @@ app.deleteSelectedEntries = function ()
         console.log(selectedIndices);
         for (var i = 0; i < selectedIndices.length; i++)
         {
-            app.entries.splice(selectedIndices[i]);
+            console.log("Deleting index " + selectedIndices[i]);
+            app.entries.splice(selectedIndices[i], 1);
         }
         app.table.row('.selected').remove().draw(false);
         console.log("Remaining entries");
@@ -544,7 +545,11 @@ app.populateTableFromArray = function (entries)
     app.table.draw();
 };
 
+/*
+ * Helper functions
+ */
 
+// swedish sort
 jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     "string-pre": function (a) {
         a = a.toLowerCase();
@@ -562,10 +567,11 @@ jQuery.extend(jQuery.fn.dataTableExt.oSort, {
 });
 
 
-
+// string.startsWith()
 if (typeof String.prototype.startsWith !== 'function') {
     // see below for better implementation!
     String.prototype.startsWith = function (str) {
         return this.indexOf(str) === 0;
     };
 }
+
