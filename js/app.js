@@ -160,7 +160,7 @@ app.toggleSelectedRow = function () {
 };
 
 
-app.getInputData = function ()
+app.getInputDataAsEntry = function ()
 {
     var newEntry = {};
     newEntry.wordClass = app.wordClassInput.val();
@@ -191,7 +191,7 @@ app.addEntry = function ()
     var valid = app.validateEntry();
     if (valid)
     {
-        var entry = app.getInputData();
+        var entry = app.getInputDataAsEntry();
         app.entries.push(entry);
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
         if (entry.wordClass === "Noun")
@@ -218,16 +218,20 @@ app.editEntry = function ()
     var valid = app.validateEntry();
     if (valid)
     {
-        var entry = app.getInputData();
-        var selectedIndex = app.table.row(".selected").index();
+        var entry = app.getInputDataAsEntry();
+        var selectedRow = app.table.row(".selected");
+        var selectedIndex = selectedRow.index();
+        console.log("In editEntry");
+        console.log(selectedRow);
+        console.log(selectedIndex);
+
         app.entries[selectedIndex] = entry;
         var prettifiedOptionalForms = app.prettifyOptionalWordForms(entry.additionalForms);
-        app.table.row('.selected').remove().draw(false);
         if (entry.wordClass === "Noun")
             var displayedSwedish = entry.swedishDictionaryForm.article + " " + entry.swedishDictionaryForm.value;
         else
             var displayedSwedish = entry.swedishDictionaryForm;
-        app.table.row.add([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
+        selectedRow.data([displayedSwedish, entry.pronunciation, entry.definition, entry.wordClass, prettifiedOptionalForms]).draw();
 
         $("#exportButton").attr("disabled", false);
         $("#nounArticles").hide();
@@ -261,8 +265,9 @@ app.openEditEntryDialog = function ()
     }
 
     // now we have guaranteed only one row
-    var selectedEntry = app.entries[app.table.row(".selected").index()];
-
+    var selectedIndex = app.table.row(".selected").index();
+    console.log("Selected index: " + selectedIndex);
+    var selectedEntry = app.entries[selectedIndex];
     console.log("selected:");
     console.log(selectedEntry);
 
